@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCR Teams App</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Optional: Add styles -->
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="app.js" defer></script>
@@ -12,8 +12,10 @@
 <body>
     <div class="container">
         <h1>OCR Microsoft Teams App</h1>
-        <input type="file" id="fileInput" accept="image/*, application/pdf" />
-        <button id="ocrButton">Extract Text</button>
+        <div id="dropZone">
+            <p>Drag and drop a file here, paste a file, or click to upload.</p>
+            <input type="file" id="fileInput" accept="image/*, application/pdf" />
+        </div>
         <div id="output">
             <h2>Extracted Text:</h2>
             <pre id="outputText"></pre>
