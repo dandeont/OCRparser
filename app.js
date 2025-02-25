@@ -1,16 +1,45 @@
-document.getElementById('ocrButton').addEventListener('click', processFile);
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const outputText = document.getElementById('outputText');
 
-async function processFile() {
-    const fileInput = document.getElementById('fileInput');
-    const outputText = document.getElementById('outputText');
-
-    if (fileInput.files.length === 0) {
-        alert('Please upload a file.');
-        return;
+// Handle file upload via file input
+fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        processFile(file);
     }
+});
 
-    const file = fileInput.files[0];
-    console.log('Uploaded File:', file);
+// Handle drag-and-drop
+dropZone.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+});
+
+dropZone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = event.dataTransfer.files[0];
+    if (file) {
+        processFile(file);
+    }
+});
+
+// Handle paste
+document.addEventListener('paste', (event) => {
+    const clipboardData = event.clipboardData || window.clipboardData;
+    if (clipboardData.files.length > 0) {
+        const file = clipboardData.files[0];
+        processFile(file);
+    }
+});
+
+// Process the file (OCR or PDF extraction)
+async function processFile(file) {
     outputText.innerText = 'Processing...';
 
     try {
@@ -33,8 +62,8 @@ async function processFile() {
     }
 }
 
+// Perform OCR on an image
 async function performOCR(imageFile) {
-    console.log('Starting OCR for image...');
     const worker = await Tesseract.createWorker({
         logger: (m) => console.log(m), // Optional: Log progress
     });
@@ -42,23 +71,20 @@ async function performOCR(imageFile) {
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
 
-    console.log('Recognizing text from image...');
     const { data: { text } } = await worker.recognize(imageFile);
-    console.log('Extracted Text:', text);
-
     await worker.terminate();
+
     return text;
 }
 
+// Process a PDF file
 async function processPDF(pdfFile) {
-    console.log('Starting PDF processing...');
     const pdfData = await pdfFile.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
 
     let extractedText = '';
 
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        console.log('Processing page', pageNum);
         const page = await pdf.getPage(pageNum);
         const viewport = page.getViewport({ scale: 2 });
 
@@ -72,11 +98,8 @@ async function processPDF(pdfFile) {
             viewport: viewport,
         }).promise;
 
-        console.log('Canvas for Page', pageNum, canvas);
-
         // Convert the canvas to a data URL
         const imageUrl = canvas.toDataURL('image/png');
-        console.log('Image URL for Page', pageNum, imageUrl);
 
         // Create an image element and wait for it to load
         const image = new Image();
@@ -86,11 +109,10 @@ async function processPDF(pdfFile) {
             image.onload = resolve;
         });
 
-        console.log('Performing OCR on page', pageNum);
+        // Perform OCR on the image
         const text = await performOCR(image);
         extractedText += text + '\n';
     }
 
-    console.log('Finished processing PDF.');
     return extractedText;
 }
