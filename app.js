@@ -146,7 +146,7 @@ pdfTextInput.addEventListener('change', (event) => {
 });
 
 extractTextButton.addEventListener('click', () => {
-    pdfTextInput.click();
+    pdfTextInput.click(); // Trigger the file input when the button is clicked
 });
 
 async function extractTextFromPDF(pdfFile) {
