@@ -138,33 +138,47 @@ async function processPDF(pdfFile) {
     return extractedText;
 }
 // PDF Text Extraction Section
+// Trigger file input when the button is clicked
+extractTextButton.addEventListener('click', () => {
+    pdfTextInput.click();
+});
+
+// Handle file input change
 pdfTextInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (file && file.type === 'application/pdf') {
         extractTextFromPDF(file);
+    } else {
+        alert('Please upload a valid PDF file.');
     }
 });
 
-extractTextButton.addEventListener('click', () => {
-    pdfTextInput.click(); // Trigger the file input when the button is clicked
-});
-
+// Extract text from PDF
 async function extractTextFromPDF(pdfFile) {
     pdfTextResult.innerText = 'Processing...';
 
     try {
+        console.log('Loading PDF...');
         const pdfData = await pdfFile.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+        console.log('PDF loaded. Number of pages:', pdf.numPages);
 
         let extractedText = '';
 
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            console.log('Processing page', pageNum);
             const page = await pdf.getPage(pageNum);
             const textContent = await page.getTextContent();
-            const pageText = textContent.items.map((item) => item.str).join(' ');
+            console.log('Text content for page', pageNum, textContent);
+
+            const pageText = textContent.items
+                .map((item) => item.str)
+                .join(' ');
+
             extractedText += pageText + '\n';
         }
 
+        console.log('Extracted text:', extractedText);
         pdfTextResult.innerText = extractedText;
     } catch (error) {
         console.error('Error:', error);
