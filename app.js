@@ -3,6 +3,10 @@ const fileInput = document.getElementById('fileInput');
 const processButton = document.getElementById('processButton');
 const outputText = document.getElementById('outputText');
 
+const pdfTextInput = document.getElementById('pdfTextInput');
+const extractTextButton = document.getElementById('extractTextButton');
+const pdfTextResult = document.getElementById('pdfTextResult');
+
 let currentFile = null;
 
 // Trigger file input when drop zone is clicked
@@ -132,4 +136,38 @@ async function processPDF(pdfFile) {
     }
 
     return extractedText;
+}
+// PDF Text Extraction Section
+pdfTextInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        extractTextFromPDF(file);
+    }
+});
+
+extractTextButton.addEventListener('click', () => {
+    pdfTextInput.click();
+});
+
+async function extractTextFromPDF(pdfFile) {
+    pdfTextResult.innerText = 'Processing...';
+
+    try {
+        const pdfData = await pdfFile.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+        let extractedText = '';
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const page = await pdf.getPage(pageNum);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map((item) => item.str).join(' ');
+            extractedText += pageText + '\n';
+        }
+
+        pdfTextResult.innerText = extractedText;
+    } catch (error) {
+        console.error('Error:', error);
+        pdfTextResult.innerText = 'Error: ' + error.message;
+    }
 }
