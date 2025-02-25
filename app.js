@@ -10,16 +10,17 @@ async function processFile() {
     }
 
     const file = fileInput.files[0];
+    console.log('Uploaded File:', file);
     outputText.innerText = 'Processing...';
 
     try {
         let extractedText = '';
 
         if (file.type.startsWith('image/')) {
-            // Handle image files
+            console.log('Processing image file...');
             extractedText = await performOCR(file);
         } else if (file.type === 'application/pdf') {
-            // Handle PDF files
+            console.log('Processing PDF file...');
             extractedText = await processPDF(file);
         } else {
             throw new Error('Unsupported file type.');
@@ -27,11 +28,13 @@ async function processFile() {
 
         outputText.innerText = extractedText;
     } catch (error) {
+        console.error('Error:', error);
         outputText.innerText = 'Error: ' + error.message;
     }
 }
 
 async function performOCR(imageFile) {
+    console.log('Starting OCR for image...');
     const worker = await Tesseract.createWorker({
         logger: (m) => console.log(m), // Optional: Log progress
     });
@@ -39,19 +42,23 @@ async function performOCR(imageFile) {
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
 
+    console.log('Recognizing text from image...');
     const { data: { text } } = await worker.recognize(imageFile);
-    await worker.terminate();
+    console.log('Extracted Text:', text);
 
+    await worker.terminate();
     return text;
 }
 
 async function processPDF(pdfFile) {
+    console.log('Starting PDF processing...');
     const pdfData = await pdfFile.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
 
     let extractedText = '';
 
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        console.log('Processing page', pageNum);
         const page = await pdf.getPage(pageNum);
         const viewport = page.getViewport({ scale: 2 });
 
@@ -65,8 +72,11 @@ async function processPDF(pdfFile) {
             viewport: viewport,
         }).promise;
 
+        console.log('Canvas for Page', pageNum, canvas);
+
         // Convert the canvas to a data URL
         const imageUrl = canvas.toDataURL('image/png');
+        console.log('Image URL for Page', pageNum, imageUrl);
 
         // Create an image element and wait for it to load
         const image = new Image();
@@ -76,10 +86,11 @@ async function processPDF(pdfFile) {
             image.onload = resolve;
         });
 
-        // Perform OCR on the image
+        console.log('Performing OCR on page', pageNum);
         const text = await performOCR(image);
         extractedText += text + '\n';
     }
 
+    console.log('Finished processing PDF.');
     return extractedText;
 }
