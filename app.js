@@ -1,12 +1,15 @@
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
+const processButton = document.getElementById('processButton');
 const outputText = document.getElementById('outputText');
+
+let currentFile = null;
 
 // Handle file upload via file input
 fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        processFile(file);
+    currentFile = event.target.files[0];
+    if (currentFile) {
+        outputText.innerText = 'File ready for processing. Click "Process File".';
     }
 });
 
@@ -23,9 +26,9 @@ dropZone.addEventListener('dragleave', () => {
 dropZone.addEventListener('drop', (event) => {
     event.preventDefault();
     dropZone.classList.remove('dragover');
-    const file = event.dataTransfer.files[0];
-    if (file) {
-        processFile(file);
+    currentFile = event.dataTransfer.files[0];
+    if (currentFile) {
+        outputText.innerText = 'File ready for processing. Click "Process File".';
     }
 });
 
@@ -33,8 +36,17 @@ dropZone.addEventListener('drop', (event) => {
 document.addEventListener('paste', (event) => {
     const clipboardData = event.clipboardData || window.clipboardData;
     if (clipboardData.files.length > 0) {
-        const file = clipboardData.files[0];
-        processFile(file);
+        currentFile = clipboardData.files[0];
+        outputText.innerText = 'File ready for processing. Click "Process File".';
+    }
+});
+
+// Handle process button click
+processButton.addEventListener('click', () => {
+    if (currentFile) {
+        processFile(currentFile);
+    } else {
+        alert('No file selected. Please upload, drag-and-drop, or paste a file.');
     }
 });
 
