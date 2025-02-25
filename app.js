@@ -5,6 +5,11 @@ const outputText = document.getElementById('outputText');
 
 let currentFile = null;
 
+// Trigger file input when drop zone is clicked
+dropZone.addEventListener('click', () => {
+    fileInput.click(); // Simulate a click on the file input
+});
+
 // Handle file upload via file input
 fileInput.addEventListener('change', (event) => {
     currentFile = event.target.files[0];
