@@ -51,12 +51,10 @@ async function processPDF(pdfFile) {
 
     let extractedText = '';
 
-    // Iterate through each page
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
         const page = await pdf.getPage(pageNum);
         const viewport = page.getViewport({ scale: 2 });
 
-        // Render the page to a canvas
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
@@ -67,9 +65,16 @@ async function processPDF(pdfFile) {
             viewport: viewport,
         }).promise;
 
-        // Convert the canvas to an image
+        // Convert the canvas to a data URL
+        const imageUrl = canvas.toDataURL('image/png');
+
+        // Create an image element and wait for it to load
         const image = new Image();
-        image.src = canvas.toDataURL('image/png');
+        image.src = imageUrl;
+
+        await new Promise((resolve) => {
+            image.onload = resolve;
+        });
 
         // Perform OCR on the image
         const text = await performOCR(image);
