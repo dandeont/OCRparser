@@ -37,6 +37,21 @@ h1 {
     display: none;
 }
 
+#processButton {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #0078d4;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+#processButton:hover {
+    background: #005bb5;
+}
+
 #output {
     margin-top: 20px;
 }
