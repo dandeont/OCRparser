@@ -26,6 +26,7 @@ h1 {
     font-size: 16px;
     cursor: pointer;
     margin-bottom: 20px;
+    position: relative; /* Required for file input positioning */
 }
 
 #dropZone.dragover {
@@ -34,7 +35,7 @@ h1 {
 }
 
 #fileInput {
-    display: none;
+    display: none; /* Hide the file input */
 }
 
 #processButton {
