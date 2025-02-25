@@ -18,22 +18,23 @@ h1 {
     color: #333;
 }
 
-input[type="file"] {
-    margin-bottom: 10px;
-}
-
-button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #0078d4;
-    color: #fff;
-    border: none;
+#dropZone {
+    border: 2px dashed #0078d4;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 16px;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
-button:hover {
-    background: #005bb5;
+#dropZone.dragover {
+    border-color: #005bb5;
+    background-color: #f0f8ff;
+}
+
+#fileInput {
+    display: none;
 }
 
 #output {
