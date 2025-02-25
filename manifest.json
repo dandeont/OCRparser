@@ -1,0 +1,37 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.16/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.16",
+    "version": "1.0.0",
+    "id": "your-app-id",
+    "packageName": "com.example.ocrteamsapp",
+    "developer": {
+        "name": "Your Name",
+        "websiteUrl": "https://yourwebsite.com",
+        "privacyUrl": "https://yourwebsite.com/privacy",
+        "termsOfUseUrl": "https://yourwebsite.com/terms"
+    },
+    "name": {
+        "short": "OCR App",
+        "full": "OCR Microsoft Teams App"
+    },
+    "description": {
+        "short": "Extract text from images using OCR.",
+        "full": "Upload an image and extract text using Tesseract.js OCR."
+    },
+    "icons": {
+        "outline": "icon-outline.png",
+        "color": "icon-color.png"
+    },
+    "accentColor": "#0078d4",
+    "staticTabs": [
+        {
+            "entityId": "ocrTab",
+            "name": "OCR",
+            "contentUrl": "https://yourwebsite.com/index.html", // Replace with your hosted URL
+            "websiteUrl": "https://yourwebsite.com/index.html", // Replace with your hosted URL
+            "scopes": ["personal"]
+        }
+    ],
+    "permissions": ["identity", "messageTeamMembers"],
+    "validDomains": ["yourwebsite.com"] // Replace with your domain
+}
