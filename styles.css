@@ -26,7 +26,7 @@ h1 {
     font-size: 16px;
     cursor: pointer;
     margin-bottom: 20px;
-    position: relative; /* Required for file input positioning */
+    position: relative;
 }
 
 #dropZone.dragover {
@@ -34,11 +34,11 @@ h1 {
     background-color: #f0f8ff;
 }
 
-#fileInput {
-    display: none; /* Hide the file input */
+#fileInput, #pdfTextInput {
+    display: none;
 }
 
-#processButton {
+#processButton, #extractTextButton {
     display: block;
     width: 100%;
     padding: 10px;
@@ -49,15 +49,15 @@ h1 {
     margin-bottom: 20px;
 }
 
-#processButton:hover {
+#processButton:hover, #extractTextButton:hover {
     background: #005bb5;
 }
 
-#output {
+#output, #pdfTextOutput {
     margin-top: 20px;
 }
 
-#outputText {
+#outputText, #pdfTextResult {
     white-space: pre-wrap;
     background: #f9f9f9;
     padding: 10px;
