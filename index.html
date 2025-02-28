@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OCR Teams App</title>
+    <title>OCR Test rename</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -11,29 +11,33 @@
 </head>
 <body>
     <div class="container">
-        <h1>OCR Microsoft Teams App</h1>
+        <h1>OCR Test</h1>
 
         <!-- OCR Section -->
         <div id="dropZone">
             <p>Drag and drop a file here, paste a file, or click to upload.</p>
             <input type="file" id="fileInput" accept="image/*, application/pdf" />
         </div>
-        <button id="processButton">Process File</button>
+        <div class="button-container">
+            <button id="ocrButton">Image to text</button>
+            <button id="extractTextButton">PDF to text</button>
+        </div>
         <div id="output">
             <h2>Extracted Text:</h2>
             <pre id="outputText"></pre>
         </div>
 
         <!-- PDF Text Extraction Section -->
-        <div id="pdfTextSection">
+        <!--<div id="pdfTextSection">
             <h2>PDF Text Extraction</h2>
             <input type="file" id="pdfTextInput" accept="application/pdf" />
             <button id="extractTextButton">Extract Text from PDF</button>
             <div id="pdfTextOutput">
                 <h3>Extracted PDF Text:</h3>
                 <pre id="pdfTextResult"></pre>
-            </div>
+            </div>-->
         </div>
+        
     </div>
 </body>
 </html>

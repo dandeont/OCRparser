@@ -1,6 +1,6 @@
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-const processButton = document.getElementById('processButton');
+const processButton = document.getElementById('ocrButton');
 const outputText = document.getElementById('outputText');
 
 const pdfTextInput = document.getElementById('pdfTextInput');
@@ -51,7 +51,7 @@ document.addEventListener('paste', (event) => {
 });
 
 // Handle process button click
-processButton.addEventListener('click', () => {
+ocrButton.addEventListener('click', () => {
     if (currentFile) {
         processFile(currentFile);
     } else {
@@ -140,22 +140,24 @@ async function processPDF(pdfFile) {
 // PDF Text Extraction Section
 // Trigger file input when the button is clicked
 extractTextButton.addEventListener('click', () => {
-    pdfTextInput.click();
+    // pdfTextInput.click();
+        extractTextFromPDF(currentFile);
+    
 });
 
 // Handle file input change
-pdfTextInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-        extractTextFromPDF(file);
-    } else {
-        alert('Please upload a valid PDF file.');
-    }
-});
+//pdfTextInput.addEventListener('change', (event) => {
+    //const file = event.target.files[0];
+    //if (file && file.type === 'application/pdf') {
+    //    extractTextFromPDF(file);
+    //} else {
+    //    alert('Please upload a valid PDF file.');
+    //}
+//});
 
 // Extract text from PDF
 async function extractTextFromPDF(pdfFile) {
-    pdfTextResult.innerText = 'Processing...';
+    outputText.innerText = 'Processing...';
 
     try {
         console.log('Loading PDF...');
@@ -179,9 +181,9 @@ async function extractTextFromPDF(pdfFile) {
         }
 
         console.log('Extracted text:', extractedText);
-        pdfTextResult.innerText = extractedText;
+        outputText.innerText = extractedText;
     } catch (error) {
         console.error('Error:', error);
-        pdfTextResult.innerText = 'Error: ' + error.message;
+        outputText.innerText = 'Error: ' + error.message;
     }
 }

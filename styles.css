@@ -38,19 +38,23 @@ h1 {
     display: none;
 }
 
-#processButton, #extractTextButton {
-    display: block;
-    width: 100%;
+.button-container {
+    display: flex; /* Arrange children (buttons) in a row */
+    gap: 10px; /* Add space between the buttons */
+    margin-bottom: 20px; /* Add margin below the buttons */
+}
+
+#ocrButton, #extractTextButton {
+    flex: 1; /* Make buttons take equal width */
     padding: 10px;
     background: #0078d4;
     color: #fff;
     border: none;
     cursor: pointer;
-    margin-bottom: 20px;
 }
 
-#processButton:hover, #extractTextButton:hover {
-    background: #005bb5;
+#ocrButton:hover, #extractTextButton:hover {
+    background: #005bb5; /* Hover effect */
 }
 
 #output, #pdfTextOutput {
