@@ -34,13 +34,39 @@ h1 {
     background-color: #f0f8ff;
 }
 
-#fileInput, #pdfTextInput {
+#fileInput {
     display: none;
+}
+
+.tool-container {
+    display: flex; /* Arrange children (buttons) in a row */
+    gap: 10px; /* Add space between the buttons */
+    margin-bottom: 20px; /* Add margin below the buttons */
+}
+
+#brandSelection {
+    margin-bottom: px;
+    margin-top: px;
+}
+
+#brand {
+    padding: 9px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+#processButton {
+    padding: 10px;
+    font-size: 16px;
+    background: #0078d4;
+    color: #fff;
+    border: none;
+    cursor: pointer;
 }
 
 .button-container {
     display: flex; /* Arrange children (buttons) in a row */
-    gap: 10px; /* Add space between the buttons */
+    gap: 100px; /* Add space between the buttons */
     margin-bottom: 20px; /* Add margin below the buttons */
 }
 
@@ -53,17 +79,19 @@ h1 {
     cursor: pointer;
 }
 
-#ocrButton:hover, #extractTextButton:hover {
+#ocrButton:hover, #extractTextButton:hover, #processButton:hover {
     background: #005bb5; /* Hover effect */
 }
 
-#output, #pdfTextOutput {
+#output {
     margin-top: 20px;
 }
 
-#outputText, #pdfTextResult {
+#outputText {
     white-space: pre-wrap;
     background: #f9f9f9;
     padding: 10px;
     border: 1px solid #ddd;
 }
+
+

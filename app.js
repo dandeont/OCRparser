@@ -1,13 +1,21 @@
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
-const processButton = document.getElementById('ocrButton');
+const ocrButton = document.getElementById('ocrButton');
 const outputText = document.getElementById('outputText');
-
-const pdfTextInput = document.getElementById('pdfTextInput');
 const extractTextButton = document.getElementById('extractTextButton');
-const pdfTextResult = document.getElementById('pdfTextResult');
+const processButton = document.getElementById('processButton');
+const brandSelection = document.getElementById('brandSelection');
+const brandDropdown = document.getElementById('brand');
+//const pdfTextInput = document.getElementById('pdfTextInput');
+//const pdfTextResult = document.getElementById('pdfTextResult');
 
 let currentFile = null;
+
+// Function to show the drop-down menu and process button
+function showBrandSelection() {
+    brandSelection.style.display = 'block'; // Show the drop-down menu
+    processButton.style.display = 'block'; // Show the process button
+}
 
 // Trigger file input when drop zone is clicked
 dropZone.addEventListener('click', () => {
@@ -18,8 +26,10 @@ dropZone.addEventListener('click', () => {
 fileInput.addEventListener('change', (event) => {
     currentFile = event.target.files[0];
     if (currentFile) {
-        outputText.innerText = 'File ready for processing. Click "Process File".';
+        showBrandSelection();
+        outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
     }
+    
 });
 
 // Handle drag-and-drop
@@ -37,7 +47,8 @@ dropZone.addEventListener('drop', (event) => {
     dropZone.classList.remove('dragover');
     currentFile = event.dataTransfer.files[0];
     if (currentFile) {
-        outputText.innerText = 'File ready for processing. Click "Process File".';
+        showBrandSelection();
+        outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
     }
 });
 
@@ -46,11 +57,53 @@ document.addEventListener('paste', (event) => {
     const clipboardData = event.clipboardData || window.clipboardData;
     if (clipboardData.files.length > 0) {
         currentFile = clipboardData.files[0];
-        outputText.innerText = 'File ready for processing. Click "Process File".';
+        showBrandSelection();
+        outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
     }
 });
 
-// Handle process button click
+// Process the file based on the selected brand
+processButton.addEventListener('click', () => {
+    if (currentFile) {
+        const selectedBrand = brandDropdown.value;
+        assignProcess(currentFile, selectedBrand);
+    } else {
+        alert('No file selected. Please upload, drag-and-drop, or paste a file.');
+    }
+});
+
+async function assignProcess(file, brand) {
+    outputText.innerText = 'Processing...';
+
+    try {
+        let extractedText = '';
+
+        // Brand-specific logic
+        switch (brand) {
+            case 'Consult4':
+            case 'iHDS':
+                // For the above tools, always perform OCR
+                extractedText = await processFile(file);
+                break;
+            case 'FDRS':
+            case 'Witech2':
+            case 'Consult3':
+                // For the above tools, extract text directly from PDF (if applicable)
+                extractedText = await extractTextFromPDF(file);
+                break;
+            default:
+                throw new Error('Unknown brand selected.');
+        }
+
+        // Add brand prefix to the extracted text
+        extractedText = `[${brand}] ${extractedText}`;
+        outputText.innerText = extractedText;
+    } catch (error) {
+        console.error('Error:', error);
+        outputText.innerText = 'Error: ' + error.message;
+    }
+}
+// Handle OCR button click
 ocrButton.addEventListener('click', () => {
     if (currentFile) {
         processFile(currentFile);
@@ -76,11 +129,12 @@ async function processFile(file) {
             throw new Error('Unsupported file type.');
         }
 
-        outputText.innerText = extractedText;
+        outputText.innerText = 'OCR Image to text' + '\n' + extractedText;
     } catch (error) {
         console.error('Error:', error);
         outputText.innerText = 'Error: ' + error.message;
     }
+    return outputText.innerText;
 }
 
 // Perform OCR on an image
@@ -132,28 +186,16 @@ async function processPDF(pdfFile) {
 
         // Perform OCR on the image
         const text = await performOCR(image);
-        extractedText += text + '\n';
+        extractedText += 'Image to text: ' + text + '\n';
     }
 
     return extractedText;
 }
 // PDF Text Extraction Section
-// Trigger file input when the button is clicked
 extractTextButton.addEventListener('click', () => {
-    // pdfTextInput.click();
-        extractTextFromPDF(currentFile);
+    extractTextFromPDF(currentFile);
     
 });
-
-// Handle file input change
-//pdfTextInput.addEventListener('change', (event) => {
-    //const file = event.target.files[0];
-    //if (file && file.type === 'application/pdf') {
-    //    extractTextFromPDF(file);
-    //} else {
-    //    alert('Please upload a valid PDF file.');
-    //}
-//});
 
 // Extract text from PDF
 async function extractTextFromPDF(pdfFile) {
@@ -181,9 +223,10 @@ async function extractTextFromPDF(pdfFile) {
         }
 
         console.log('Extracted text:', extractedText);
-        outputText.innerText = extractedText;
+        outputText.innerText = 'PDF text to text' + '\n' + extractedText;
     } catch (error) {
         console.error('Error:', error);
         outputText.innerText = 'Error: ' + error.message;
     }
+    return outputText.innerText;
 }
