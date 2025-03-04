@@ -1,4 +1,7 @@
-//import { consult3Parser } from './parsers/consult3Parser.js';
+import { consult3Parser } from './parsers/consult3Parser.js';
+console.log('Imported consult3Parser:', consult3Parser);
+
+import { consult3Parser2 } from './parsers/consult3.js';
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -10,12 +13,6 @@ const brandSelection = document.getElementById('brandSelection');
 const brandDropdown = document.getElementById('brand');
 
 
-const consult3Parser = require('./parsers/consult3Parser.js');
-
-
-//const pdfTextInput = document.getElementById('pdfTextInput');
-//const pdfTextResult = document.getElementById('pdfTextResult');
-let parsedResult = '';
 let currentFile = null;
 
 // Function to show the drop-down menu and process button
@@ -83,7 +80,9 @@ async function assignProcess(file, brand) {
     outputText.innerText = 'Processing...';
 
     try {
+        
         let extractedText = '';
+        let parsedResult = '';
 
         // Brand-specific text extraction
         switch (brand) {
@@ -94,30 +93,35 @@ async function assignProcess(file, brand) {
                 break;
             case 'FDRS':
             case 'Witech2':
-            case 'Consult3':
                 // For the above tools, extract text directly from PDF (if applicable)
                 extractedText = await extractTextFromPDF(file);
                 break;
+            case 'Consult3':
+                extractedText = await extractTextFromPDF(file);
+                //parsedResult = await consult3Parser(extractedText);
+                break; // Exit early since we’re done
             default:
                 throw new Error('Unknown brand selected.');
         }
 
         // Add brand prefix to the extracted text
-        extractedText = `[${brand}] ${extractedText}`;
-        outputText.innerText = extractedText;
+        //extractedText = `[${brand}] ${extractedText}`;
+        //outputText.innerText = extractedText;
 
         // Brand specific parsing
         switch (brand) {
             case 'Consult3':
                 parsedResult = consult3Parser(extractedText);
+                console.log('Parsed text:', parsedResult);
+            
                 break;
             default:
                 throw new Error('Unknown brand selected.');
         }
 
         // Add brand prefix to the extracted text
-        extractedText = `[${brand}] ${extractedText}`;
-        outputText.innerText = extractedText;
+        
+        outputText.innerText = `Raw Extracted Text:\n${extractedText}\n\nParsed Result:\n${parsedResult}`;
 
     } catch (error) {
         console.error('Error:', error);
@@ -172,6 +176,8 @@ async function performOCR(imageFile) {
 
     return text;
 }
+
+// Set the worker source for PDF.js
 
 // Process a PDF file
 async function processPDF(pdfFile) {

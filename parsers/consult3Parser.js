@@ -30,12 +30,12 @@ function consult3Parser(inputText) {
         const description = parts.slice(3, -1).join(' ');
         const status = parts[parts.length - 1];
 
-        // Initialize the module in the groupedData object if it doesn't exist
+        // Initialize the module in the groupedData object if it doesn’t exist
         if (!groupedData[module]) {
             groupedData[module] = [];
         }
 
-        // Add the parsed data to the module's group
+        // Add the parsed data to the module’s group
         groupedData[module].push({
             code: dtc,
             description,
@@ -43,8 +43,22 @@ function consult3Parser(inputText) {
         });
     }
 
-    return groupedData;
+    // Convert groupedData to a formatted text string
+    let parsedText = '';
+    for (const [module, codes] of Object.entries(groupedData)) {
+        parsedText += `${module}:\n`;
+        for (const { code, description, status } of codes) {
+            parsedText += `  ${code} - ${description} (${status})\n`;
+        }
+    }
+
+    // If no data was parsed, indicate that
+    if (!parsedText) {
+        parsedText = 'No diagnostic trouble codes (DTCs) found.\n';
+    }
+
+    return parsedText.trim(); // Remove trailing newline
 }
 
-// Export the function so it can be used in other files
-module.exports = consult3Parser;
+// Export using ES Module syntax
+export { consult3Parser };
