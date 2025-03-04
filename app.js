@@ -1,3 +1,8 @@
+import { consult3Parser } from './parsers/consult3Parser.js';
+console.log('Imported consult3Parser:', consult3Parser);
+
+import { consult3Parser2 } from './parsers/consult3.js';
+
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 const ocrButton = document.getElementById('ocrButton');
@@ -6,8 +11,7 @@ const extractTextButton = document.getElementById('extractTextButton');
 const processButton = document.getElementById('processButton');
 const brandSelection = document.getElementById('brandSelection');
 const brandDropdown = document.getElementById('brand');
-//const pdfTextInput = document.getElementById('pdfTextInput');
-//const pdfTextResult = document.getElementById('pdfTextResult');
+
 
 let currentFile = null;
 
@@ -76,9 +80,11 @@ async function assignProcess(file, brand) {
     outputText.innerText = 'Processing...';
 
     try {
+        
         let extractedText = '';
+        let parsedResult = '';
 
-        // Brand-specific logic
+        // Brand-specific text extraction
         switch (brand) {
             case 'Consult4':
             case 'iHDS':
@@ -87,17 +93,36 @@ async function assignProcess(file, brand) {
                 break;
             case 'FDRS':
             case 'Witech2':
-            case 'Consult3':
                 // For the above tools, extract text directly from PDF (if applicable)
                 extractedText = await extractTextFromPDF(file);
+                break;
+            case 'Consult3':
+                extractedText = await extractTextFromPDF(file);
+                //parsedResult = await consult3Parser(extractedText);
+                break; // Exit early since we’re done
+            default:
+                throw new Error('Unknown brand selected.');
+        }
+
+        // Add brand prefix to the extracted text
+        //extractedText = `[${brand}] ${extractedText}`;
+        //outputText.innerText = extractedText;
+
+        // Brand specific parsing
+        switch (brand) {
+            case 'Consult3':
+                parsedResult = consult3Parser(extractedText);
+                console.log('Parsed text:', parsedResult);
+            
                 break;
             default:
                 throw new Error('Unknown brand selected.');
         }
 
         // Add brand prefix to the extracted text
-        extractedText = `[${brand}] ${extractedText}`;
-        outputText.innerText = extractedText;
+        
+        outputText.innerText = `Raw Extracted Text:\n${extractedText}\n\nParsed Result:\n${parsedResult}`;
+
     } catch (error) {
         console.error('Error:', error);
         outputText.innerText = 'Error: ' + error.message;
@@ -151,6 +176,8 @@ async function performOCR(imageFile) {
 
     return text;
 }
+
+// Set the worker source for PDF.js
 
 // Process a PDF file
 async function processPDF(pdfFile) {
@@ -213,11 +240,26 @@ async function extractTextFromPDF(pdfFile) {
             console.log('Processing page', pageNum);
             const page = await pdf.getPage(pageNum);
             const textContent = await page.getTextContent();
-            console.log('Text content for page', pageNum, textContent);
 
-            const pageText = textContent.items
-                .map((item) => item.str)
-                .join(' ');
+            // Reconstruct text with spacing and line breaks
+            let pageText = '';
+            let lastY = 0;
+
+            textContent.items.forEach((item) => {
+                const { str, transform } = item;
+
+                // Extract the y-coordinate of the text item
+                const y = transform[5];
+
+                // Add a newline if the y-coordinate changes significantly
+                if (Math.abs(y - lastY) > 10) {
+                    pageText += '\n';
+                }
+
+                // Add the text to the page
+                pageText += str + ' ';
+                lastY = y;
+            });
 
             extractedText += pageText + '\n';
         }
@@ -228,5 +270,6 @@ async function extractTextFromPDF(pdfFile) {
         console.error('Error:', error);
         outputText.innerText = 'Error: ' + error.message;
     }
+
     return outputText.innerText;
 }
