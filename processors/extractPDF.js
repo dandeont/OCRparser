@@ -38,9 +38,7 @@ async function extractTextFromPDF(pdfFile) {
 
             extractedText += pageText + '\n';
         }
-
-        console.log('Extracted text:', extractedText);
-        returnText = 'PDF text to text' + '\n' + extractedText;
+        returnText = extractedText;
     } catch (error) {
         console.error('Error:', error);
         returnText = 'Error: ' + error.message;

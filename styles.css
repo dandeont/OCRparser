@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 2000px;
     margin: 0 auto;
     padding: 20px;
     background: #fff;
@@ -39,14 +39,14 @@ h1 {
 }
 
 .tool-container {
-    display: flex; /* Arrange children (buttons) in a row */
-    gap: 10px; /* Add space between the buttons */
-    margin-bottom: 20px; /* Add margin below the buttons */
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 #brandSelection {
-    margin-bottom: px;
-    margin-top: px;
+    margin-bottom: px; /* Seems incomplete, assuming 0px */
+    margin-top: px;    /* Seems incomplete, assuming 0px */
 }
 
 #brand {
@@ -65,13 +65,13 @@ h1 {
 }
 
 .button-container {
-    display: flex; /* Arrange children (buttons) in a row */
-    gap: 100px; /* Add space between the buttons */
-    margin-bottom: 20px; /* Add margin below the buttons */
+    display: flex;
+    gap: 100px;
+    margin-bottom: 20px;
 }
 
 #ocrButton, #extractTextButton {
-    flex: 1; /* Make buttons take equal width */
+    flex: 1;
     padding: 10px;
     background: #0078d4;
     color: #fff;
@@ -80,7 +80,7 @@ h1 {
 }
 
 #ocrButton:hover, #extractTextButton:hover, #processButton:hover {
-    background: #005bb5; /* Hover effect */
+    background: #005bb5;
 }
 
 #output {
@@ -94,4 +94,12 @@ h1 {
     border: 1px solid #ddd;
 }
 
-
+#counter {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    color: #333;
+    display: none; /* Hidden by default */
+}
