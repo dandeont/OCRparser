@@ -1,64 +1,24 @@
 function consult3Parser(inputText) {
     // Split the input text into lines
     const lines = inputText.split('\n');
+    console.log('All Lines:', lines);
 
-    // Find the index of the line containing "TIME"
-    const timeIndex = lines.findIndex(line => line.includes('TIME'));
-
-    // Initialize an object to group codes by module
-    const groupedData = {};
-
-    // Iterate through the lines after "TIME"
-    for (let i = timeIndex + 1; i < lines.length; i++) {
-        const line = lines[i].trim();
-
-        // Stop parsing if we encounter a line with "No DTC"
-        if (line.includes('No DTC')) {
-            break;
-        }
-
-        // Skip empty lines
-        if (!line) continue;
-
-        // Split the line into parts based on spaces
-        const parts = line.split(/\s+/);
-
-        // Extract the relevant information
-        const partNumber = parts[0];
-        const dtc = parts[1];
-        const module = parts[2];
-        const description = parts.slice(3, -1).join(' ');
-        const status = parts[parts.length - 1];
-
-        // Initialize the module in the groupedData object if it doesn’t exist
-        if (!groupedData[module]) {
-            groupedData[module] = [];
-        }
-
-        // Add the parsed data to the module’s group
-        groupedData[module].push({
-            code: dtc,
-            description,
-            status
-        });
+    // Find the index of the first line containing a DTC
+    const startIndex = lines.findIndex(line => line.match(/[A-Z][A-Z0-9]{4}-[A-Z0-9]{2}/));
+    console.log('Start Index:', startIndex);
+    console.log('First DTC Line:', startIndex !== -1 ? lines[startIndex] : 'None');
+    
+    // If no DTC is found, return the no-DTC message
+    if (startIndex === -1) {
+        return 'No diagnostic trouble codes (DTCs) found.';
     }
 
-    // Convert groupedData to a formatted text string
-    let parsedText = '';
-    for (const [module, codes] of Object.entries(groupedData)) {
-        parsedText += `${module}:\n`;
-        for (const { code, description, status } of codes) {
-            parsedText += `  ${code} - ${description} (${status})\n`;
-        }
-    }
-
-    // If no data was parsed, indicate that
-    if (!parsedText) {
-        parsedText = 'No diagnostic trouble codes (DTCs) found.\n';
-    }
-
-    return parsedText.trim(); // Remove trailing newline
+    // Take lines from the first DTC onward, trim each line, and join
+    const trimmedLines = lines.slice(startIndex).map(line => line.trimStart());
+    console.log('Trimmed Lines:', trimmedLines);
+    const resultText = trimmedLines.join('\n');
+    console.log('Result Text Before Final Trim:', resultText);
+    return resultText.trim();
 }
 
-// Export using ES Module syntax
 export { consult3Parser };

@@ -2,18 +2,21 @@ import { processFile } from './processors/OCR.js';
 console.log('Imported OCR:', processFile);
 import { extractTextFromPDF } from './processors/extractPDF.js';
 console.log('Imported OCR:', extractTextFromPDF);
-
 import { consult3Parser } from './parsers/consult3Parser.js';
 console.log('Imported consult3Parser:', consult3Parser);
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
+
+
 const ocrButton = document.getElementById('ocrButton');
-const outputText = document.getElementById('outputText');
 const extractTextButton = document.getElementById('extractTextButton');
 const processButton = document.getElementById('processButton');
+
 const brandSelection = document.getElementById('brandSelection');
 const brandDropdown = document.getElementById('brand');
+
+const outputText = document.getElementById('outputText');
 
 let currentFile = null;
 
@@ -34,8 +37,7 @@ fileInput.addEventListener('change', (event) => {
     if (currentFile) {
         showBrandSelection();
         outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
-    }
-    
+    }  
 });
 
 // Handle drag-and-drop
@@ -80,12 +82,9 @@ processButton.addEventListener('click', () => {
 
 async function assignProcess(file, brand) {
     outputText.innerText = 'Processing...';
-
     try {
-        
         let extractedText = '';
         let parsedResult = '';
-
         // Brand-specific text extraction
         switch (brand) {
             case 'Consult4':
@@ -100,50 +99,49 @@ async function assignProcess(file, brand) {
                 break;
             case 'Consult3':
                 extractedText = await extractTextFromPDF(file);
-                //parsedResult = await consult3Parser(extractedText);
+                parsedResult = consult3Parser(extractedText);
+                console.log('Parsed text:', parsedResult);
                 break; // Exit early since we’re done
             default:
                 throw new Error('Unknown brand selected.');
         }
-
         // Add brand prefix to the extracted text
         //extractedText = `[${brand}] ${extractedText}`;
         //outputText.innerText = extractedText;
-
-        // Brand specific parsing
-        switch (brand) {
-            case 'Consult3':
-                parsedResult = consult3Parser(extractedText);
-                console.log('Parsed text:', parsedResult);
-            
-                break;
-            default:
-                throw new Error('Unknown brand selected.');
-        }
-
-        // Add brand prefix to the extracted text
-        
         outputText.innerText = `Raw Extracted Text:\n${extractedText}\n\nParsed Result:\n${parsedResult}`;
-
     } catch (error) {
         console.error('Error:', error);
         outputText.innerText = 'Error: ' + error.message;
     }
 }
+
 // Handle OCR button click
-ocrButton.addEventListener('click', () => {
+ocrButton.addEventListener('click', async () => {
     if (currentFile) {
-        outputText.innerText = processFile(currentFile);
+        outputText.innerText = 'Processing...';
+        try {
+            const extractedText = await processFile(currentFile);
+            console.log('OCR Result:', extractedText);
+            outputText.innerText = extractedText;
+        } catch (error) {
+            console.error('OCR Error:', error);
+            outputText.innerText = 'Error: ' + error.message;
+        }
     } else {
         alert('No file selected. Please upload, drag-and-drop, or paste a file.');
     }
 });
-
-
 // PDF Text Extraction Section
-extractTextButton.addEventListener('click', () => {
+extractTextButton.addEventListener('click', async () => {
     if (currentFile) {
-        outputText.innerText = extractTextFromPDF(currentFile);
+        outputText.innerText = 'Processing...';
+        try {
+            outputText.innerText = await extractTextFromPDF(currentFile);
+            console.log('Extracted Text:', outputText.innerText);
+        } catch (error) {
+            console.error('Extract Text Error:', error);
+            outputText.innerText = 'Error: ' + error.message;
+        }
     } else {
         alert('No file selected. Please upload, drag-and-drop, or paste a file.');
     }

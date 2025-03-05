@@ -46,7 +46,7 @@ async function extractTextFromPDF(pdfFile) {
         returnText = 'Error: ' + error.message;
     }
 
-    return returnText;
+    return returnText.trim();
 }
 
 export { extractTextFromPDF };

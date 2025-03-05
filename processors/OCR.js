@@ -1,11 +1,11 @@
 // Process the file (OCR or PDF extraction)
 async function processFile(file) {
     outputText.innerText = 'Processing...';
+    let returnText = '';
 
     try {
         let extractedText = '';
-        let returnText = '';
-
+        
         if (file.type.startsWith('image/')) {
             console.log('Processing image file...');
             extractedText = await performOCR(file);
@@ -21,7 +21,7 @@ async function processFile(file) {
         console.error('Error:', error);
         returnText = 'Error: ' + error.message;
     }
-    return returnText;
+    return returnText.trim();
 }
 
 // Perform OCR on an image
@@ -39,9 +39,7 @@ async function performOCR(imageFile) {
     return text;
 }
 
-// Set the worker source for PDF.js
-
-// Process a PDF file
+// Process a PDF file to an image
 async function processPDF(pdfFile) {
     const pdfData = await pdfFile.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
@@ -78,7 +76,7 @@ async function processPDF(pdfFile) {
         extractedText += 'Image to text: ' + text + '\n';
     }
 
-    return extractedText;
+    return extractedText.trim();
 }
 
 export { processFile };
