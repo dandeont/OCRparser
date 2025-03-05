@@ -16,7 +16,7 @@
         <!-- OCR Section -->
         <div id="dropZone">
             <p>Drag and drop a file here, paste a file, or click to upload.</p>
-            <input type="file" id="fileInput" accept="image/*, application/pdf" />
+            <input type="file" id="fileInput" accept="image/*, application/pdf, text/csv" />
         </div>
 
         <div class="button-container">
@@ -40,8 +40,9 @@
 
         <div id="output">
             <h2>Extracted Text:</h2>
+            <div id="counter"></div>
             <pre id="outputText"></pre>
-            <div id="counter"></div> <!-- Added counter element -->
+             <!-- Added counter element -->
         </div>
     </div>
 </body>
