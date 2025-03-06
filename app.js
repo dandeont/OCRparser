@@ -126,7 +126,8 @@ async function assignProcess(file, brand) {
             default:
                 throw new Error('Unknown brand selected.');
         }
-        outputText.innerText = `Parsed Result:\n${parsedResult}\n\nRaw Extracted Text:\n${extractedText}`;
+        outputText.innerText = `Parsed Result:\n${parsedResult}`;
+        //outputText.innerText = `Parsed Result:\n${parsedResult}\n\nRaw Extracted Text:\n${extractedText}`;
         updateCounter(parsedResult); // Update counter after parsing
     } catch (error) {
         console.error('Error:', error);
