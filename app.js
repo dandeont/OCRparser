@@ -5,6 +5,7 @@ import { extractCSV } from './processors/extractCSV.js'; // New import
 import { consult3Parser } from './parsers/consult3Parser.js';
 import { consult4Parser } from './parsers/consult4Parser.js';
 import { fdrsParser } from './parsers/fdrsParser.js';
+import { istaParser } from './parsers/istaParser.js';
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -108,6 +109,10 @@ async function assignProcess(file, brand) {
                 extractedText = await extractCSV(file);
                 parsedResult = await consult4Parser(extractedText);
                 break;
+            case 'ISTA':
+                extractedText = await extractTextFromPDF(file);
+                parsedResult = await istaParser(extractedText);
+                break;
             case 'iHDS':
                 extractedText = await processFile(file);
                 break;
@@ -126,7 +131,7 @@ async function assignProcess(file, brand) {
             default:
                 throw new Error('Unknown brand selected.');
         }
-        outputText.innerText = `Parsed Result:\n${parsedResult}`;
+        outputText.innerText = parsedResult;
         //outputText.innerText = `Parsed Result:\n${parsedResult}\n\nRaw Extracted Text:\n${extractedText}`;
         updateCounter(parsedResult); // Update counter after parsing
     } catch (error) {

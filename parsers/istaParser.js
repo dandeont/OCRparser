@@ -88,21 +88,25 @@ function istaParser(inputText) {
     const checkpoint6Output = checkpoint6Blocks.join('\n');
     console.log('Checkpoint 6 Plain Text Output:', checkpoint6Output);
 
-    // Parse Checkpoint 6 output into desired format
-    const parsedLines = checkpoint6Output.split('\n').map(line => {
-        // Split by three spaces
+    // Parse into desired parsed structure, erasing last character of first element
+    const moduleGroups = {};
+    checkpoint6Output.split('\n').forEach(line => {
         const elements = line.split('   ');
         console.log('Block Elements:', elements);
 
-        // Ensure at least 4 elements, fill with empty strings if needed
+        // Ensure at least 4 elements
         while (elements.length < 4) {
             elements.push('');
         }
 
-        const module = elements[0] || 'UNKNOWN';
+        // Erase last character of the first element (module)
+        let module = elements[0] || 'UNKNOWN';
+        if (module.length > 0) {
+            module = module.slice(0, -1);
+        }
         const dtc = elements[1] || 'UNKNOWN';
         const description = elements[2] || 'UNKNOWN';
-        let statusMarker = elements[3] || 'Unknown';
+        let statusMarker = elements[3] || 'No data';
 
         // Map status marker
         switch (statusMarker) {
@@ -113,16 +117,27 @@ function istaParser(inputText) {
                 statusMarker = 'Current';
                 break;
             default:
-                statusMarker = 'Unknown';
+                break;
         }
 
-        // Join with three spaces
-        return [module, dtc, description, statusMarker].join('   ');
+        // Group by module
+        if (!moduleGroups[module]) {
+            moduleGroups[module] = [];
+        }
+        moduleGroups[module].push(`${dtc} - ${description} - ${statusMarker}`);
     });
 
-    const formattedOutput = parsedLines.join('\n');
-    console.log('Formatted Output (desired format):', formattedOutput);
-    return formattedOutput;
+    // Format into desired structure
+    let formattedOutput = '';
+    for (const [module, dtcs] of Object.entries(moduleGroups)) {
+        formattedOutput += `${module}:\n`;
+        formattedOutput += dtcs.join('\n');
+        formattedOutput += '\n\n';
+    }
+
+    const resultText = formattedOutput.trim();
+    console.log('Formatted Output (desired parsed structure):', resultText);
+    return resultText;
 }
 
 export { istaParser };
