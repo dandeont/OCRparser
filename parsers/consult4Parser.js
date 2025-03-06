@@ -1,10 +1,3 @@
-// consult4Parser.js
-
-/**
- * Parses Consult4 diagnostic text and formats DTCs into grouped modules.
- * @param {string} inputText - The raw text extracted from a Consult4 CSV file.
- * @returns {string} - Formatted DTCs grouped by module or a no-DTC message.
- */
 function consult4Parser(inputText) {
     // Split the input text into lines
     const lines = inputText.split('\n');

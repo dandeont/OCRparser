@@ -1,10 +1,3 @@
-// extractCSV.js
-
-/**
- * Extracts text from a CSV file and returns it as formatted text, removing double quotes.
- * @param {File} file - The CSV file to process.
- * @returns {Promise<string>} - The CSV content formatted as text with commas and newlines, without double quotes.
- */
 async function extractCSV(file) {
     return new Promise((resolve, reject) => {
         if (!file || file.type !== 'text/csv') {

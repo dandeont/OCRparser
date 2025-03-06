@@ -1,4 +1,3 @@
-// Extract text from PDF
 async function extractTextFromPDF(pdfFile) {
     let returnText = ' ';
     returnText = 'Processing...';

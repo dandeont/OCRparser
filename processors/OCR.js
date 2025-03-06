@@ -1,4 +1,4 @@
-// Process the file (OCR or PDF extraction)
+
 async function processFile(file) {
     outputText.innerText = 'Processing...';
     let returnText = '';

@@ -1,13 +1,10 @@
 import { processFile } from './processors/OCR.js';
-console.log('Imported OCR:', processFile);
 import { extractTextFromPDF } from './processors/extractPDF.js';
-console.log('Imported OCR:', extractTextFromPDF);
 import { extractCSV } from './processors/extractCSV.js'; // New import
-console.log('Imported CSV Extractor:', extractCSV);
+
 import { consult3Parser } from './parsers/consult3Parser.js';
-console.log('Imported consult3Parser:', consult3Parser);
 import { consult4Parser } from './parsers/consult4Parser.js';
-console.log('Imported consult4Parser:', consult4Parser);
+import { fdrsParser } from './parsers/fdrsParser.js';
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
@@ -109,12 +106,16 @@ async function assignProcess(file, brand) {
         switch (brand) {
             case 'Consult4':
                 extractedText = await extractCSV(file);
-                parsedResult = consult4Parser(extractedText);
+                parsedResult = await consult4Parser(extractedText);
                 break;
             case 'iHDS':
                 extractedText = await processFile(file);
                 break;
             case 'FDRS':
+                extractedText = await extractTextFromPDF(file);
+                parsedResult = await fdrsParser(extractedText);
+                //parsedResult = await fdrsParser();
+                break;
             case 'Witech2':
                 extractedText = await extractTextFromPDF(file);
                 break;
