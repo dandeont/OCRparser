@@ -25,7 +25,7 @@ h1 {
     color: #666;
     font-size: 16px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     position: relative;
 }
 
@@ -34,8 +34,22 @@ h1 {
     background-color: #f0f8ff;
 }
 
+#dropZone:hover {
+    background: #ebebeb;
+}
+
 #fileInput {
     display: none;
+}
+
+#inputLog {
+    margin-top: 0px;
+    padding: 0px;
+    /*background: #f9f9f9;
+    border: 1px solid #ddd;*/
+    font-size: 11px;
+    color: #333;
+    margin-bottom: 10px;
 }
 
 .tool-container {
@@ -88,6 +102,17 @@ h1 {
 }
 
 #outputText {
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+#parsedOutput {
+    margin-top: 20px;
+}
+
+#parsedOutputText {
     white-space: pre-wrap;
     background: #f9f9f9;
     padding: 10px;

@@ -9,6 +9,7 @@ import { istaParser } from './parsers/istaParser.js';
 
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
+const inputLog = document.getElementById('inputLog');
 
 const ocrButton = document.getElementById('ocrButton');
 const extractTextButton = document.getElementById('extractTextButton');
@@ -17,15 +18,31 @@ const processButton = document.getElementById('processButton');
 const brandSelection = document.getElementById('brandSelection');
 const brandDropdown = document.getElementById('brand');
 
+const output = document.getElementById('output');
 const outputText = document.getElementById('outputText');
+const parsedOutput = document.getElementById('parsedOutput');
+const parsedOutputText = document.getElementById('parsedOutputText');
 const counter = document.getElementById('counter');
 
 let currentFile = null;
+
 
 // Function to show the drop-down menu and process button
 function showBrandSelection() {
     brandSelection.style.display = 'block';
     processButton.style.display = 'block';
+    ocrButton.style.display = 'block';
+    extractTextButton.style.display = 'block';
+    inputLog.style.display = 'block';
+    inputLog.innerText = `Loaded file: ${currentFile.name}\nSelect OEM tool and click "Process File" to parse, or extract text from image or PDF.`;
+}
+
+function showOutput(){
+    output.style.display = 'block';
+}
+
+function showParsedOutput(){
+    parsedOutput.style.display = 'block';
 }
 
 // Function to update module and DTC counter
@@ -54,7 +71,6 @@ fileInput.addEventListener('change', (event) => {
     currentFile = event.target.files[0];
     if (currentFile) {
         showBrandSelection();
-        outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
     }  
 });
 
@@ -74,7 +90,6 @@ dropZone.addEventListener('drop', (event) => {
     currentFile = event.dataTransfer.files[0];
     if (currentFile) {
         showBrandSelection();
-        outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
     }
 });
 
@@ -84,13 +99,14 @@ document.addEventListener('paste', (event) => {
     if (clipboardData.files.length > 0) {
         currentFile = clipboardData.files[0];
         showBrandSelection();
-        outputText.innerText = 'File ready for processing. Select OEM tool and click "Process File".';
     }
 });
 
-// Process the file based on the selected brand
+// Process the file based on the selected brand AKA Process button click
 processButton.addEventListener('click', () => {
     if (currentFile) {
+        showParsedOutput();
+        showOutput();
         const selectedBrand = brandDropdown.value;
         assignProcess(currentFile, selectedBrand);
     } else {
@@ -131,7 +147,8 @@ async function assignProcess(file, brand) {
             default:
                 throw new Error('Unknown brand selected.');
         }
-        outputText.innerText = parsedResult;
+        parsedOutputText.innerText = parsedResult;
+        outputText.innerText = extractedText;
         //outputText.innerText = `Parsed Result:\n${parsedResult}\n\nRaw Extracted Text:\n${extractedText}`;
         updateCounter(parsedResult); // Update counter after parsing
     } catch (error) {
@@ -144,6 +161,7 @@ async function assignProcess(file, brand) {
 // Handle OCR button click
 ocrButton.addEventListener('click', async () => {
     if (currentFile) {
+        showOutput();
         outputText.innerText = 'Processing...';
         try {
             const extractedText = await processFile(currentFile);
@@ -160,9 +178,10 @@ ocrButton.addEventListener('click', async () => {
     }
 });
 
-// PDF Text Extraction Section
+// PDF Text Extraction button click
 extractTextButton.addEventListener('click', async () => {
     if (currentFile) {
+        showOutput();
         outputText.innerText = 'Processing...';
         try {
             outputText.innerText = await extractTextFromPDF(currentFile);

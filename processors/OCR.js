@@ -73,7 +73,7 @@ async function processPDF(pdfFile) {
 
         // Perform OCR on the image
         const text = await performOCR(image);
-        extractedText += 'Image to text: ' + text + '\n';
+        extractedText += text + '\n';
     }
 
     return extractedText.trim();

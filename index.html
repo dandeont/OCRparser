@@ -18,10 +18,11 @@
             <p>Drag and drop a file here, paste a file, or click to upload.</p>
             <input type="file" id="fileInput" accept="image/*, application/pdf, text/csv" />
         </div>
+        <div id="inputLog" style="display: none;"></div>
 
         <div class="button-container">
-            <button id="ocrButton">Image to text</button>
-            <button id="extractTextButton">PDF to text</button>
+            <button id="ocrButton" style="display: none;">Image to text</button>
+            <button id="extractTextButton" style="display: none;">PDF to text</button>
         </div>
 
         <div class="tool-container">    
@@ -39,11 +40,15 @@
             <button id="processButton" style="display: none;">Process File</button>
         </div>
 
-        <div id="output">
-            <h2>Extracted Text:</h2>
+        <div id="parsedOutput" style="display: none;">
+            <h2>Parsed Text:</h2>
             <div id="counter"></div>
+            <pre id="parsedOutputText"></pre>
+        </div>
+
+        <div id="output" style="display: none;">
+            <h2>Extracted Text:</h2>
             <pre id="outputText"></pre>
-             <!-- Added counter element -->
         </div>
     </div>
 </body>
